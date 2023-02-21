@@ -3,6 +3,7 @@ package flight.reservation.order;
 import flight.reservation.Customer;
 import flight.reservation.flight.ScheduledFlight;
 import flight.reservation.payment.CreditCard;
+import flight.reservation.payment.PaymentStrategy;
 import flight.reservation.payment.Paypal;
 
 import java.util.Arrays;
@@ -103,5 +104,9 @@ public class FlightOrder extends Order {
         } else {
             return false;
         }
+    }
+
+    public boolean Pay(PaymentStrategy paymentMethod){
+        paymentMethod.Pay(getPrice());
     }
 }
