@@ -55,11 +55,8 @@ public class FlightOrder extends Order {
         if (!cardIsPresentAndValid(creditCard)) {
             throw new IllegalStateException("Payment information is not set or not valid.");
         }
-        boolean isPaid = payWithCreditCard(creditCard, this.getPrice());
-        if (isPaid) {
-            this.setClosed();
-        }
-        return isPaid;
+        Pay(creditCard);
+        return this.isClosed();
     }
 
     private boolean cardIsPresentAndValid(CreditCard card) {
@@ -75,38 +72,15 @@ public class FlightOrder extends Order {
         if (email == null || password == null || !email.equals(Paypal.DATA_BASE.get(password))) {
             throw new IllegalStateException("Payment information is not set or not valid.");
         }
-        boolean isPaid = payWithPayPal(email, password, this.getPrice());
+        Pay(new Paypal(email, password));
+        return this.isClosed();
+    }
+
+    
+    public void Pay(PaymentStrategy paymentMethod){
+        boolean isPaid=paymentMethod.Pay(getPrice());
         if (isPaid) {
             this.setClosed();
         }
-        return isPaid;
-    }
-
-    public boolean payWithCreditCard(CreditCard card, double amount) throws IllegalStateException {
-        if (cardIsPresentAndValid(card)) {
-            System.out.println("Paying " + getPrice() + " using Credit Card.");
-            double remainingAmount = card.getAmount() - getPrice();
-            if (remainingAmount < 0) {
-                System.out.printf("Card limit reached - Balance: %f%n", remainingAmount);
-                throw new IllegalStateException("Card limit reached");
-            }
-            card.setAmount(remainingAmount);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean payWithPayPal(String email, String password, double amount) throws IllegalStateException {
-        if (email.equals(Paypal.DATA_BASE.get(password))) {
-            System.out.println("Paying " + getPrice() + " using PayPal.");
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean Pay(PaymentStrategy paymentMethod){
-        paymentMethod.Pay(getPrice());
     }
 }
