@@ -18,10 +18,19 @@ public class Flight {
         this.number = number;
         this.departure = departure;
         this.arrival = arrival;
-        this.aircraft = aircraft;
+        this.aircraft = adaptAircraft(aircraft);
         checkValidity();
     }
-
+private Object adaptAircraft(Object aircraft){
+        if(aircraft instanceof PassengerPlane|| aircraft instanceof Helicopter){
+            return aircraft;
+        }
+        else if(aircraft instanceof PassengerDrone){
+            return new PassengerPlaneAdapter((PassengerDrone)aircraft);
+        }else{
+            throw new IllegalArgumentException(String.format("Aircraft not recognizable"));
+        }
+}
     private void checkValidity() throws IllegalArgumentException {
         if (!isAircraftValid(departure) || !isAircraftValid(arrival)) {
             throw new IllegalArgumentException("Selected aircraft is not valid for the selected route.");
@@ -33,10 +42,7 @@ public class Flight {
             String model;
             if (this.aircraft instanceof PassengerPlane) {
                 model = ((PassengerPlane) this.aircraft).model;
-            } else if (this.aircraft instanceof Helicopter) {
-                model = ((Helicopter) this.aircraft).getModel();
-            } else if (this.aircraft instanceof PassengerDrone) {
-                model = "HypaHype";
+
             } else {
                 throw new IllegalArgumentException(String.format("Aircraft is not recognized"));
             }
@@ -66,3 +72,29 @@ public class Flight {
     }
 
 }
+class PassengerPlaneAdapter implements PassengerPlane {
+    private final PassengerDrone passengerDrone;
+
+    public PassengerPlaneAdapter(PassengerDrone passengerDrone) {
+        this.passengerDrone = passengerDrone;
+    }
+
+    @Override
+    public String getModel() {
+        return "HypaHype";
+    }
+
+    @Override
+    public int getPassengerCapacity() {
+        return passengerDrone.getPassengerCapacity();
+    }
+
+    @Override
+    public int getMaxAltitude() {
+        return passengerDrone.getMaxAltitude();
+    }
+
+    @Override
+    public int getWingspan() {
+        return passengerDrone.getWingspan();
+    }
