@@ -1,6 +1,5 @@
 package flight.reservation.order;
 
-import java.nio.channels.NetworkChannel;
 import java.util.Date;
 
 import flight.reservation.payment.CreditCard;

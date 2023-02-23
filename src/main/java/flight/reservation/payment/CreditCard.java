@@ -38,13 +38,14 @@ public class CreditCard implements PaymentStrategy{
     }
 
     @Override
-    public void Pay(Double amount){
+    public boolean Pay(Double amount){
         System.out.println("Paying " + amount + " using PayPal.");
         double remainingAmount = this.getAmount() - amount;
             if (remainingAmount < 0) {
                 System.out.printf("Card limit reached - Balance: %f%n", remainingAmount);
-                throw new IllegalStateException("Card limit reached");
+                return false;
             }
             this.setAmount(remainingAmount);
+            return true;
     }
 }
