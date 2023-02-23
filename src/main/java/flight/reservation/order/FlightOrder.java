@@ -2,12 +2,8 @@ package flight.reservation.order;
 
 import flight.reservation.Customer;
 import flight.reservation.flight.ScheduledFlight;
-import flight.reservation.payment.CreditCard;
-import flight.reservation.payment.PaymentStrategy;
-import flight.reservation.payment.Paypal;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class FlightOrder extends Order {
@@ -39,48 +35,5 @@ public class FlightOrder extends Order {
             }
         });
         return valid;
-    }
-
-    public boolean processOrderWithCreditCardDetail(String number, Date expirationDate, String cvv) throws IllegalStateException {
-        CreditCard creditCard = new CreditCard(number, expirationDate, cvv);
-        return processOrderWithCreditCard(creditCard);
-    }
-
-    public boolean processOrderWithCreditCard(CreditCard creditCard) throws IllegalStateException {
-        if (isClosed()) {
-            // Payment is already proceeded
-            return true;
-        }
-        // validate payment information
-        if (!cardIsPresentAndValid(creditCard)) {
-            throw new IllegalStateException("Payment information is not set or not valid.");
-        }
-        Pay(creditCard);
-        return this.isClosed();
-    }
-
-    private boolean cardIsPresentAndValid(CreditCard card) {
-        return card != null && card.isValid();
-    }
-
-    public boolean processOrderWithPayPal(String email, String password) throws IllegalStateException {
-        if (isClosed()) {
-            // Payment is already proceeded
-            return true;
-        }
-        // validate payment information
-        if (email == null || password == null || !email.equals(Paypal.DATA_BASE.get(password))) {
-            throw new IllegalStateException("Payment information is not set or not valid.");
-        }
-        Pay(new Paypal(email, password));
-        return this.isClosed();
-    }
-
-    
-    public void Pay(PaymentStrategy paymentMethod){
-        boolean isPaid=paymentMethod.Pay(getPrice());
-        if (isPaid) {
-            this.setClosed();
-        }
     }
 }
