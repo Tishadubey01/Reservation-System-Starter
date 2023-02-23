@@ -81,13 +81,17 @@ public class ScheduledFlight extends Flight {
     public double getCurrentPrice() {
         double total = currentPrice;
         for (ScheduledFlight flight: this.layovers) {
-            total += flight.currentPrice;
+            total += flight.getCurrentPrice();
         }
         return total;
     }
 
     public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
+    }
+
+    public List<ScheduledFlight> getLayovers() {
+        return layovers;
     }
 
     public void addLayoverFlight(ScheduledFlight layover) {
