@@ -15,18 +15,21 @@ public class ScheduledFlight extends Flight {
     private final List<Passenger> passengers;
     private final Date departureTime;
     private double currentPrice = 100;
+    private List<ScheduledFlight> layovers;
 
     public ScheduledFlight(int number, Airport departure, Airport arrival, Object aircraft, Date departureTime) {
         super(number, departure, arrival, aircraft);
         this.departureTime = departureTime;
         this.passengers = new ArrayList<>();
+        this.layovers = new ArrayList<>();
     }
-
+    
     public ScheduledFlight(int number, Airport departure, Airport arrival, Object aircraft, Date departureTime, double currentPrice) {
         super(number, departure, arrival, aircraft);
         this.departureTime = departureTime;
         this.passengers = new ArrayList<>();
         this.currentPrice = currentPrice;
+        this.layovers = new ArrayList<>();
     }
 
     public int getCrewMemberCapacity() throws NoSuchFieldException {
@@ -76,10 +79,18 @@ public class ScheduledFlight extends Flight {
     }
 
     public double getCurrentPrice() {
-        return currentPrice;
+        double total = currentPrice;
+        for (ScheduledFlight flight: this.layovers) {
+            total += flight.currentPrice;
+        }
+        return total;
     }
 
     public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
+    }
+
+    public void addLayoverFlight(ScheduledFlight layover) {
+        this.layovers.add(layover);
     }
 }
