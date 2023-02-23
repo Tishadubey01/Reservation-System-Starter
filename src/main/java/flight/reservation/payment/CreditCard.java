@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Dummy credit card class.
  */
-public class CreditCard {
+public class CreditCard implements PaymentStrategy{
     private double amount;
     private String number;
     private Date date;
@@ -35,5 +35,16 @@ public class CreditCard {
     public void setValid() {
         // Dummy validation
         this.valid = number.length() > 0 && date.getTime() > System.currentTimeMillis() && !cvv.equals("000");
+    }
+
+    @Override
+    public void Pay(Double amount){
+        System.out.println("Paying " + amount + " using PayPal.");
+        double remainingAmount = this.getAmount() - amount;
+            if (remainingAmount < 0) {
+                System.out.printf("Card limit reached - Balance: %f%n", remainingAmount);
+                throw new IllegalStateException("Card limit reached");
+            }
+            this.setAmount(remainingAmount);
     }
 }
