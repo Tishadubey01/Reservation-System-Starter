@@ -98,3 +98,4 @@ class PassengerPlaneAdapter implements PassengerPlane {
     public int getWingspan() {
         return passengerDrone.getWingspan();
     }
+}
